@@ -1,6 +1,6 @@
-function getGrid(dataCampaign) {
-
-	var win;
+function getGridCampaign() {
+	
+	var win = false;
 
 	var addCampaignForm = new Ext.FormPanel({
 		labelWidth: 75, // label settings here cascade unless overridden
@@ -13,66 +13,93 @@ function getGrid(dataCampaign) {
 				name: 'name',
 				allowBlank: false
 			}, {
-				fieldLabel: 'Name',
-				name: 'Description'
+				fieldLabel: 'Description',
+				name: 'description'
 			}
 		],
 		buttons: [{
 				text: 'Save',
 				handler: function() {
 
-					storeCampaign.add(new storeCampaign.recordType({
-						name: 'data3',
-						description: 'data4'
-					}));
+					var data = addCampaignForm.getForm().getValues()
+					var Plant = gridCampaign.getStore().recordType;
 
+					var p = new Plant({
+						name: data['name'],
+						description: data['description']
+					});
 
+					gridCampaign.stopEditing();
+					storeCampaign.add(p);
 
+					win.hide();
 
+					return false;
 				}
 			}, {
-				text: 'Cancel'
+				text: 'Cancel',
+				handler: function() {
+					win.hide();
+				}
 			}]
+	});
+
+
+	var proxy = new Ext.data.HttpProxy({
+		type: 'rest',
+		api: {
+			read: 'ajax.php?act=read_campaigns',
+			create: 'ajax.php?act=create_campaigns',
+			destroy: 'ajax.php?act=remove_campaigns',
+			save: 'ajax.php?act=update_campaigns'
+		}
 	});
 
 	var readerCampaign = new Ext.data.JsonReader({
 		root: 'data', // Элемент объекта, содержащий данные
-		idProperty: 'id', // Коланка, содержащая Уникальные данные ID
+		idIndex: 0,
 		fields: [// Описание колонок, выводимых в Grid
-			{name: 'id', type: 'int', allowBlank: false},
 			{name: 'name', allowBlank: false},
 			{name: 'description'},
 		]
-	});
+	})
 
 	var storeCampaign = new Ext.data.Store({
 		id: 'storeCampaign',
 		reader: readerCampaign,
-		// Получаем входные данные для работы
-		data: dataCampaign
+		proxy: proxy,
+		autoSave: true,
+		writer: new Ext.data.JsonWriter({
+			encode: true
+		}),
+		sortInfo: {field: 'name', direction: 'ASC'},
+		listeners: {
+			'save': function() {
+				storeCampaign.reload();
+				console.log('r')
+			}
+		}
+
 	});
+
+	
 
 	var gridCampaign = new Ext.grid.GridPanel({
 		store: storeCampaign, // хранилище. Важно! Required!\
 		height: 350,
 		width: 500,
+		renderTo: "t1",
 		cm: new Ext.grid.ColumnModel({// Модель колонок
 			columns: [// Колонки
 				{
 					header: 'Name',
 					dataIndex: 'name',
-					width: 150,
-					/*editor: new fm.TextField({
-					 allowBlank: false
-					 })*/
+					width: 150
 				},
 				{
 					header: 'Description',
 					dataIndex: 'description',
-					width: 300,
-					/*editor: new fm.TextField({
-					 allowBlank: false
-					 })*/
+					width: 300
 				},
 			],
 			// Флаг что по умолчанию колонки Sortable. по умолчанию false
@@ -82,28 +109,17 @@ function getGrid(dataCampaign) {
 				text: 'Add Campaign',
 				handler: function() {
 
-
-					// access the Record constructor through the grid's store
-					/*var Plant = gridCampaign.getStore().recordType;
-					 var p = new Plant({
-					 name: '',
-					 description: ''
-					 });
-					 gridCampaign.stopEditing();
-					 storeCampaign.insert(0, p);
-					 gridCampaign.startEditing(0, 0);*/
-
 					if (!win) {
 
 						win = new Ext.Window({
 							width: 400,
-							height: 300,
+							height: 150,
 							title: 'Add Campaign',
-							//						layout: 'fit',
-							//						bodyStyle: {
-							//							padding: '5px',
-							//							'background-color': '#FFFFFF'
-							//						},
+							layout: 'fit',
+							bodyStyle: {
+								padding: '5px',
+								'background-color': '#FFFFFF'
+							},
 							listeners: {// Прослушиватели на события
 								close: function() {               // На закрытие окна 
 									//WINDOW.win = false;
@@ -117,57 +133,47 @@ function getGrid(dataCampaign) {
 					}
 
 					win.show();
-
-
-
 				}
 			},
 			{
 				text: 'Remove Campaign',
-				//disabled: true,
 				handler: function() {
 					gridCampaign.stopEditing();
+
 					var s = gridCampaign.getSelectionModel().getSelections();
+
 					for (var i = 0, r; r = s[i]; i++) {
 						storeCampaign.remove(r);
 					}
+					
 				}
-			}]
+			}],
+		listeners: {
+			rowdblclick: function(grid, rowIndex, e) {
+				console.log(grid.getStore())
+			}
+		}
 	});
-
+	
+	storeCampaign.load();
+	
 	return gridCampaign;
 }
 
 
 Ext.onReady(function() {
 
-	var dataCampaign;
-
-	Ext.Ajax.request({
-		url: '/ajax.php?act=read_campaigns',
-		success: function(response) {
-			dataCampaign = Ext.util.JSON.decode(response.responseText);
-
-
-			var tabs = new Ext.TabPanel({
-				renderTo: Ext.getBody(),
-				activeTab: 0,
-				bodyStyle: 'padding:10px;',
-				defaults: {autoHeight: true},
-				items: [
-					{title: 'Campaigns', items: [
-							getGrid(dataCampaign)
-						]},
-					{title: 'Lists'},
-					{title: 'Subscribers'},
-					{title: 'Templates'}
-				]
-			});
-		}
+	var tabs = new Ext.TabPanel({
+		renderTo: 'tabs1',
+		activeTab: 0,
+		bodyStyle: 'padding:10px;',
+		defaults: {autoHeight: true},
+		items: [
+			{title: 'Campaigns', contentEl:'t1'},
+			{title: 'Lists'},
+			{title: 'Subscribers'},
+			{title: 'Templates'}
+		]
 	});
-
-
-
-
 
 }); //end onReady
