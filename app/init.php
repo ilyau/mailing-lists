@@ -1,7 +1,9 @@
 <?php
 
-require dirname(__FILE__) . '/App.php';
-require dirname(__FILE__) . '/Response.php';
+function __autoload($class_name) {
+    include dirname(__FILE__) . '/' . $class_name . '.php';
+}
+
 $config = dirname(__FILE__) . '/config.php';
 
-$app = new App($config);
+App::create($config);

@@ -21,47 +21,7 @@
 // Application instance for showing user-feedback messages.
 var App = new Ext.App({});
 
-// Create HttpProxy instance.  Notice new configuration parameter "api" here instead of load.  However, you can still use
-// the "url" paramater -- All CRUD requests will be directed to your single url instead.
-var proxy = new Ext.data.HttpProxy({
-	api: {
-		read: 'ajax.php?act=read_campaigns',
-		create: 'ajax.php?act=create_campaigns',
-		update: 'ajax.php?act=update_campaigns',
-		destroy: 'ajax.php?act=destroy_campaigns'
-	}
-});
 
-// Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
-var reader = new Ext.data.JsonReader({
-	totalProperty: 'total',
-	successProperty: 'success',
-	idProperty: 'id',
-	root: 'data',
-	messageProperty: 'message'  // <-- New "messageProperty" meta-data
-}, [
-	{name: 'id'},
-	{name: 'name', allowBlank: false},
-	{name: 'description', allowBlank: false},
-]);
-
-// The new DataWriter component.
-var writer = new Ext.data.JsonWriter({
-	encode: true,
-	writeAllFields: true
-});
-
-// Typical Store collecting the Proxy, Reader and Writer together.
-var store = new Ext.data.Store({
-	id: 'campaign',
-	proxy: proxy,
-	reader: reader,
-	writer: writer, // <-- plug a DataWriter into the store just as you would a Reader
-	autoSave: true // <-- false would delay executing create, update, destroy requests until specifically told to do so with some [save] buton.
-});
-
-// load the store immeditately
-store.load();
 
 ////
 // ***New*** centralized listening of DataProxy events "beforewrite", "write" and "writeexception"
@@ -95,15 +55,6 @@ Ext.data.DataProxy.addListener('exception', function(proxy, type, action, option
 	}
 });
 
-// A new generic text field
-var textField = new Ext.form.TextField();
-
-// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
-var campaignColumns = [
-	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: textField},
-	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: textField},
-];
 
 Ext.onReady(function() {
 
@@ -112,9 +63,24 @@ Ext.onReady(function() {
 
 	// create user.Grid instance (@see UserGrid.js)
 	var campaignsGrid = new App.campaigns.Grid({
-		renderTo: 'campaigns-grid',
-		store: store,
-		columns: campaignColumns
+		//renderTo: 'campaigns-grid',
+		store: Campaigns.store,
+		columns: Campaigns.campaignColumns
+		/*listeners: {
+			rowclick: function(g, index, ev) {
+				var rec = g.store.getAt(index);
+				userForm.loadRecord(rec);
+			},
+			destroy: function() {
+				userForm.getForm().reset();
+			}
+		}*/
+	});
+	
+	var listsGrid = new App.lists.Grid({
+		//renderTo: 'lists-grid',
+		store: Lists.store,
+		columns: Lists.campaignColumns
 		/*listeners: {
 			rowclick: function(g, index, ev) {
 				var rec = g.store.getAt(index);
@@ -126,17 +92,25 @@ Ext.onReady(function() {
 		}*/
 	});
 
-	var tabs = new Ext.TabPanel({
+	new Ext.TabPanel({
 		renderTo: 'tabs',
 		activeTab: 0,
 		width: 500,
 		//bodyStyle: 'padding:10px;',
 		defaults: {autoHeight: true},
 		items: [
-			{title: 'Campaigns', contentEl: 'campaigns'},
-			{title: 'Lists', contentEl: 'lists'},
-			{title: 'Subscribers', contentEl: 'subscribers'},
-			{title: 'Templates', contentEl: 'templates'}
+			{title: 'Campaigns', items: [
+				campaignsGrid
+			]},
+			{title: 'Lists', items: [
+				listsGrid
+			]},
+			{title: 'Subscribers', items: [
+					
+			]},
+			{title: 'Templates', items: [
+					
+			]}
 		]
 	});
 });

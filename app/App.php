@@ -8,14 +8,15 @@
 class App {
 
 	private $db;
-	private $config;
+	private static $config;
+	private static $app;
 	
 	public function db() {
 
 		if($this->db == NULL) {
-			$this->db = new PDO("{$this->config['db']['type']}:host={$this->config['db']['host']};dbname={$this->config['db']['database']}"
-							,$this->config['db']['user']
-							,$this->config['db']['password']);
+			$this->db = new PDO(self::$config['db']['type'] . ':host=' .  self::$config['db']['host'] . ';dbname=' . self::$config['db']['database']
+							,self::$config['db']['user']
+							,self::$config['db']['password']);
 
 			$this->db->query("SET CHARACTER SET utf8");
 		}		
@@ -23,12 +24,25 @@ class App {
 		return $this->db;
 	}
 
-	public function __construct($config) {
+	private function __construct() {}
+	private function __clone()    {}
+	private function __wakeup() {}
 
-		$this->config = include $config;
+	public static function create($config) {
 		
-		
+		if(!self::$app) {
+			$class = __CLASS__;
+			self::$app = new $class();
+			self::$config = include $config;
+		}
+
+		return self::$app;
 	}
+
+	public static function get() {
+		return self::$app;
+	}
+
 
 	const TPLPATH = '/template/';
 

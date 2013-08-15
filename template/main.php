@@ -11,8 +11,8 @@
 
 		<script type="text/javascript" src="/assets/App.js"></script>
 		<script type="text/javascript" src="/assets/writer.js"></script>
-		<script type="text/javascript" src="/assets/UserForm.js"></script>
 		<script type="text/javascript" src="/assets/CampaignsGrid.js"></script>
+		<script type="text/javascript" src="/assets/ListsGrid.js"></script>
 
 		<!-- Common Styles for the examples -->
 		<link rel="stylesheet" type="text/css" href="/ext-3.4.1/examples/shared/examples.css" />
@@ -23,13 +23,7 @@
 		<h1>Управление рассылками</h1>
 		<p>Основные принципы взяты с сервиса MailChimp. Есть кампании, списки подписчиков, подписчики и шаблоны писем. В клиентской части реализованы CRUD-операции.</p>
 		
-		<div id="tabs">
-			<div id="campaigns">
-				<div id="user-form"></div>
-				<div id="campaigns-grid"></div>
-				
-			</div>
-		</div>
+		<div id="tabs"></div>
 		
 	</body>
 </html>

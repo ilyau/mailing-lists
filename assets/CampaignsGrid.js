@@ -24,10 +24,10 @@ Ext.ns('App', 'App.campaigns');
  * A typical EditorGridPanel extension.
  */
 App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
-	renderTo: 'campaigns-grid',
+	//renderTo: 'campaigns-grid',
 	iconCls: 'silk-grid',
 	frame: true,
-	//title: 'Campaigns',
+	title: 'Campaigns',
 	height: 300,
 	width: 500,
 	//style: 'margin-top: 10px',
@@ -44,8 +44,8 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 		// build toolbars and buttons.
 		this.tbar = this.buildTopToolbar();
-		//	this.bbar = this.buildBottomToolbar();
-		this.buttons = this.buildUI();
+		//this.bbar = this.buildBottomToolbar();
+		//this.buttons = this.buildUI();
 
 		// super
 		App.campaigns.Grid.superclass.initComponent.call(this);
@@ -89,7 +89,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 					this.store.autoSave = pressed;
 				},
 				scope: this
-			}, '-', {
+			}, '-'/*, {
 				text: 'batch',
 				enableToggle: true,
 				pressed: true,
@@ -106,7 +106,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 					store.writer.writeAllFields = pressed;
 				},
 				scope: this
-			}, '-'];
+			}, '-'*/];
 	},
 	/**
 	 * buildUI
@@ -162,3 +162,59 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		
 	}
 });
+
+
+
+var Campaigns = {};
+
+// Create HttpProxy instance.  Notice new configuration parameter "api" here instead of load.  However, you can still use
+// the "url" paramater -- All CRUD requests will be directed to your single url instead.
+Campaigns.proxy = new Ext.data.HttpProxy({
+	api: {
+		read: 'ajax.php?type=Campaigns&act=read',
+		create: 'ajax.php?type=Campaigns&act=create',
+		update: 'ajax.php?type=Campaigns&act=update',
+		destroy: 'ajax.php?type=Campaigns&act=destroy'
+	}
+});
+
+// Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
+Campaigns.reader = new Ext.data.JsonReader({
+	totalProperty: 'total',
+	successProperty: 'success',
+	idProperty: 'id',
+	root: 'data',
+	messageProperty: 'message'  // <-- New "messageProperty" meta-data
+}, [
+	{name: 'id'},
+	{name: 'name', allowBlank: false},
+	{name: 'description', allowBlank: false},
+]);
+
+// The new DataWriter component.
+Campaigns.writer = new Ext.data.JsonWriter({
+	encode: true,
+	writeAllFields: true
+});
+
+// Typical Store collecting the Proxy, Reader and Writer together.
+Campaigns.store = new Ext.data.Store({
+	id: 'campaign',
+	proxy: Campaigns.proxy,
+	reader: Campaigns.reader,
+	writer: Campaigns.writer, // <-- plug a DataWriter into the store just as you would a Reader
+	autoSave: true // <-- false would delay executing create, update, destroy requests until specifically told to do so with some [save] buton.
+});
+
+// load the store immeditately
+Campaigns.store.load();
+
+// A new generic text field
+Campaigns.textField = new Ext.form.TextField();
+
+// Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
+Campaigns.campaignColumns = [
+	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
+	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: Campaigns.textField},
+	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: Campaigns.textField},
+];
