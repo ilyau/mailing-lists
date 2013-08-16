@@ -10,7 +10,7 @@ App.subscribers.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	frame: true,
 	title: 'Subscribers',
 	height: 300,
-	width: 500,
+	width: 700,
 	//style: 'margin-top: 10px',
 	autoSave: true,
 	initComponent: function() {
@@ -161,6 +161,7 @@ Subscribers.reader = new Ext.data.JsonReader({
 	{name: 'first_name', allowBlank: false},
 	{name: 'last_name', allowBlank: false},
 	{name: 'email', allowBlank: false},
+	{name: 'id_list', allowBlank: false},
 ]);
 
 // The new DataWriter component.
@@ -187,7 +188,11 @@ Subscribers.textField = new Ext.form.TextField();
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Subscribers.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "First name", width: 100, sortable: true, dataIndex: 'first_name', editor: Subscribers.textField},
-	{header: "Last name", width: 50, sortable: true, dataIndex: 'last_name', editor: Subscribers.textField},
-	{header: "Email", width: 50, sortable: true, dataIndex: 'email', editor: Subscribers.textField},
+	{header: "First name", width: 70, sortable: true, dataIndex: 'first_name', editor: Subscribers.textField},
+	{header: "Last name", width: 80, sortable: true, dataIndex: 'last_name', editor: Subscribers.textField},
+	{header: "Email", width: 70, sortable: true, dataIndex: 'email', editor: Subscribers.textField},
+	{header: "List", width: 70, sortable: true, dataIndex: 'id_list',
+		editor: Campaigns.comboList, renderer: Ext.util.Format.comboRenderer(Campaigns.comboList)
+
+	},
 ];

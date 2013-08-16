@@ -10,7 +10,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	frame: true,
 	title: 'Campaigns',
 	height: 300,
-	width: 500,
+	width: 700,
 	//style: 'margin-top: 10px',
 	autoSave: true,
 	initComponent: function() {
@@ -71,23 +71,23 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 				},
 				scope: this
 			}, '-'/*, {
-				text: 'batch',
-				enableToggle: true,
-				pressed: true,
-				tooltip: 'When enabled, Store will batch all records for each type of CRUD verb into a single Ajax request.',
-				toggleHandler: function(btn, pressed) {
-					this.store.batch = pressed;
-				},
-				scope: this
-			}, '-', {
-				text: 'writeAllFields',
-				enableToggle: true,
-				tooltip: 'When enabled, Writer will write *all* fields to the server -- not just those that changed.',
-				toggleHandler: function(btn, pressed) {
-					store.writer.writeAllFields = pressed;
-				},
-				scope: this
-			}, '-'*/];
+			 text: 'batch',
+			 enableToggle: true,
+			 pressed: true,
+			 tooltip: 'When enabled, Store will batch all records for each type of CRUD verb into a single Ajax request.',
+			 toggleHandler: function(btn, pressed) {
+			 this.store.batch = pressed;
+			 },
+			 scope: this
+			 }, '-', {
+			 text: 'writeAllFields',
+			 enableToggle: true,
+			 tooltip: 'When enabled, Writer will write *all* fields to the server -- not just those that changed.',
+			 toggleHandler: function(btn, pressed) {
+			 store.writer.writeAllFields = pressed;
+			 },
+			 scope: this
+			 }, '-'*/];
 	},
 	/**
 	 * buildUI
@@ -140,7 +140,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	 * onStatus
 	 */
 	onStatus: function(btn, ev) {
-		
+
 	}
 });
 
@@ -170,6 +170,8 @@ Campaigns.reader = new Ext.data.JsonReader({
 	{name: 'id'},
 	{name: 'name', allowBlank: false},
 	{name: 'description', allowBlank: false},
+	{name: 'id_list', allowBlank: false},
+	{name: 'id_template', allowBlank: false},
 ]);
 
 // The new DataWriter component.
@@ -193,9 +195,46 @@ Campaigns.store.load();
 // A new generic text field
 Campaigns.textField = new Ext.form.TextField();
 
+
+Ext.util.Format.comboRenderer = function(combo){
+    return function(value){
+        var record = combo.findRecord(combo.valueField, value);
+        return record ? record.get(combo.displayField) : combo.valueNotFoundText;
+    }
+}
+
+Campaigns.comboList = new Ext.form.ComboBox({
+			typeAhead: true,
+			triggerAction: 'all',
+			store: Lists.store,
+			lazyRender: true,
+			mode: 'remote',
+			valueField: 'id',
+			displayField: 'name'
+		});
+
+Campaigns.comboTemplate = new Ext.form.ComboBox({
+			typeAhead: true,
+			triggerAction: 'all',
+			store: Templates.store,
+			lazyRender: true,
+			mode: 'remote',
+			valueField: 'id',
+			displayField: 'title'
+		});
+
+
+
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Campaigns.campaignColumns = [
-	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: Campaigns.textField},
-	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: Campaigns.textField},
+	{header: "ID", width: 20, sortable: true, dataIndex: 'id'},
+	{header: "Name", width: 50, sortable: true, dataIndex: 'name', editor: Campaigns.textField},
+	{header: "Description", width: 100, sortable: true, dataIndex: 'description', editor: Campaigns.textField},
+	{header: "List", width: 80, sortable: true, dataIndex: 'id_list',
+		editor: Campaigns.comboList, renderer: Ext.util.Format.comboRenderer(Campaigns.comboList)
+
+	},
+	{header: "Template", width: 80, sortable: true, dataIndex: 'id_template',
+		editor: Campaigns.comboTemplate, renderer: Ext.util.Format.comboRenderer(Campaigns.comboTemplate)
+	},
 ];

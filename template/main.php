@@ -11,10 +11,10 @@
 
 		<script type="text/javascript" src="/assets/App.js"></script>
 		<script type="text/javascript" src="/assets/writer.js"></script>
-		<script type="text/javascript" src="/assets/CampaignsGrid.js"></script>
 		<script type="text/javascript" src="/assets/ListsGrid.js"></script>
-		<script type="text/javascript" src="/assets/SubscribersGrid.js"></script>
 		<script type="text/javascript" src="/assets/TemplatesGrid.js"></script>
+		<script type="text/javascript" src="/assets/CampaignsGrid.js"></script>
+		<script type="text/javascript" src="/assets/SubscribersGrid.js"></script>
 
 		<!-- Common Styles for the examples -->
 		<link rel="stylesheet" type="text/css" href="/ext-3.4.1/examples/shared/examples.css" />

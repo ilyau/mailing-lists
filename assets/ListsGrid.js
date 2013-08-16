@@ -10,7 +10,7 @@ App.lists.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	frame: true,
 	title: 'Lists',
 	height: 300,
-	width: 500,
+	width: 700,
 	//style: 'margin-top: 10px',
 	autoSave: true,
 	initComponent: function() {
@@ -141,6 +141,6 @@ Lists.textField = new Ext.form.TextField();
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Lists.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: Lists.textField},
-	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: Lists.textField},
+	{header: "Name", width: 50, sortable: true, dataIndex: 'name', editor: Lists.textField},
+	{header: "Description", width: 100, sortable: true, dataIndex: 'description', editor: Lists.textField},
 ];

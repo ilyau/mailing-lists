@@ -42,65 +42,87 @@ Ext.onReady(function() {
 
 	// create user.Grid instance (@see UserGrid.js)
 	var campaignsGrid = new App.campaigns.Grid({
-		//renderTo: 'campaigns-grid',
 		store: Campaigns.store,
 		columns: Campaigns.campaignColumns
-		/*listeners: {
-			rowclick: function(g, index, ev) {
-				var rec = g.store.getAt(index);
-				userForm.loadRecord(rec);
-			},
-			destroy: function() {
-				userForm.getForm().reset();
-			}
-		}*/
+				/*listeners: {
+				 rowclick: function(g, index, ev) {
+				 var rec = g.store.getAt(index);
+				 userForm.loadRecord(rec);
+				 },
+				 destroy: function() {
+				 userForm.getForm().reset();
+				 }
+				 }*/
 	});
-	
+
 	var listsGrid = new App.lists.Grid({
-		//renderTo: 'lists-grid',
 		store: Lists.store,
 		columns: Lists.campaignColumns
-		/*listeners: {
-			rowclick: function(g, index, ev) {
-				var rec = g.store.getAt(index);
-				userForm.loadRecord(rec);
-			},
-			destroy: function() {
-				userForm.getForm().reset();
-			}
-		}*/
+
 	});
-	
+
 	var subscribersGrid = new App.subscribers.Grid({
 		store: Subscribers.store,
 		columns: Subscribers.campaignColumns
 	})
-	
+
 	var templatesGrid = new App.templates.Grid({
 		store: Templates.store,
 		columns: Templates.campaignColumns
 	})
-	
+
 
 	new Ext.TabPanel({
 		renderTo: 'tabs',
 		activeTab: 0,
-		width: 500,
+		width: 700,
 		//bodyStyle: 'padding:10px;',
 		defaults: {autoHeight: true},
 		items: [
-			{title: 'Campaigns', items: [
-				campaignsGrid
-			]},
-			{title: 'Lists', items: [
-				listsGrid
-			]},
-			{title: 'Subscribers', items: [
-				subscribersGrid
-			]},
-			{title: 'Templates', items: [
-				templatesGrid
-			]}
+			{
+				title: 'Campaigns',
+				items: [
+					campaignsGrid
+				],
+				listeners: {
+					activate: function() {
+						Campaigns.store.reload();
+					}
+				}
+			},
+			{
+				title: 'Lists',
+				items: [
+					listsGrid
+				],
+				listeners: {
+					activate: function() {
+						Lists.store.reload();
+					}
+				}
+			},
+			{
+				title: 'Subscribers',
+				items: [
+					subscribersGrid
+				],
+				listeners: {
+					activate: function() {
+						Subscribers.store.reload();
+					}
+				}
+			},
+			{
+				title: 'Templates',
+				items: [
+					templatesGrid
+				],
+				listeners: {
+					activate: function() {
+						Templates.store.reload();
+					}
+				}
+			}
 		]
 	});
 });

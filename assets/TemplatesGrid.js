@@ -10,7 +10,7 @@ App.templates.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	frame: true,
 	title: 'Templates',
 	height: 300,
-	width: 500,
+	width: 700,
 	//style: 'margin-top: 10px',
 	autoSave: true,
 	initComponent: function() {
@@ -186,6 +186,6 @@ Templates.textField = new Ext.form.TextField();
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Templates.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Titlte", width: 100, sortable: true, dataIndex: 'title', editor: Templates.textField},
-	{header: "Template", width: 50, sortable: true, dataIndex: 'template', editor: Templates.textField},
+	{header: "Titlte", width: 60, sortable: true, dataIndex: 'title', editor: Templates.textField},
+	{header: "Template", width: 100, sortable: true, dataIndex: 'template', editor: Templates.textField},
 ];
