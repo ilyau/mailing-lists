@@ -1,12 +1,12 @@
 <?php
 
-class ListsController extends Controller {
+class SubscribersController extends Controller {
 	
 	public function readAction() {
 		
-		$list = new ListModel();
+		$subscriber = new SubscriberModel();
 		
-		$result = $list->read();
+		$result = $subscriber->read();
 
 		echo json_encode($result);
 
@@ -17,8 +17,8 @@ class ListsController extends Controller {
 
 		$data = json_decode($_REQUEST['data'], true);
 
-		$list = new ListModel();
-		$result = $list->create($data);
+		$subscriber = new SubscriberModel();
+		$result = $subscriber->create($data);
 
 		if ($result) {
 			$response->success = true;
@@ -35,8 +35,8 @@ class ListsController extends Controller {
 
 		$data = json_decode($_REQUEST['data'], true);
 
-		$list = new ListModel();
-		$result = $list->destroy((int) $data);
+		$subscriber = new SubscriberModel();
+		$result = $subscriber->destroy((int) $data);
 
 		if ($result) {
 			$response->success = true;
@@ -54,8 +54,8 @@ class ListsController extends Controller {
 		$data = json_decode($_REQUEST['data'], true);
 		$id = $data['id'];
 		
-		$list = new ListModel();
-		$result = $list->update($id, $data);
+		$subscriber = new SubscriberModel();
+		$result = $subscriber->update($id, $data);
 		
 		if($result) {
 			$response->success = true;

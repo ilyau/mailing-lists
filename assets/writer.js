@@ -1,27 +1,6 @@
-/*
- This file is part of Ext JS 3.4
- 
- Copyright (c) 2011-2013 Sencha Inc
- 
- Contact:  http://www.sencha.com/contact
- 
- GNU General Public License Usage
- This file may be used under the terms of the GNU General Public License version 3.0 as
- published by the Free Software Foundation and appearing in the file LICENSE included in the
- packaging of this file.
- 
- Please review the following information to ensure the GNU General Public License version 3.0
- requirements will be met: http://www.gnu.org/copyleft/gpl.html.
- 
- If you are unsure which license is appropriate for your use, please contact the sales department
- at http://www.sencha.com/contact.
- 
- Build date: 2013-04-03 15:07:25
- */
+
 // Application instance for showing user-feedback messages.
 var App = new Ext.App({});
-
-
 
 ////
 // ***New*** centralized listening of DataProxy events "beforewrite", "write" and "writeexception"
@@ -91,6 +70,17 @@ Ext.onReady(function() {
 			}
 		}*/
 	});
+	
+	var subscribersGrid = new App.subscribers.Grid({
+		store: Subscribers.store,
+		columns: Subscribers.campaignColumns
+	})
+	
+	var templatesGrid = new App.templates.Grid({
+		store: Templates.store,
+		columns: Templates.campaignColumns
+	})
+	
 
 	new Ext.TabPanel({
 		renderTo: 'tabs',
@@ -106,10 +96,10 @@ Ext.onReady(function() {
 				listsGrid
 			]},
 			{title: 'Subscribers', items: [
-					
+				subscribersGrid
 			]},
 			{title: 'Templates', items: [
-					
+				templatesGrid
 			]}
 		]
 	});

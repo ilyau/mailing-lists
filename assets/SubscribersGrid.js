@@ -1,14 +1,14 @@
 
-Ext.ns('App', 'App.campaigns');
+Ext.ns('App', 'App.subscribers');
 /**
  * App.campaigns.Grid
  * A typical EditorGridPanel extension.
  */
-App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
+App.subscribers.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	//renderTo: 'campaigns-grid',
 	iconCls: 'silk-grid',
 	frame: true,
-	title: 'Campaigns',
+	title: 'Subscribers',
 	height: 300,
 	width: 500,
 	//style: 'margin-top: 10px',
@@ -29,7 +29,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		//this.buttons = this.buildUI();
 
 		// super
-		App.campaigns.Grid.superclass.initComponent.call(this);
+		App.subscribers.Grid.superclass.initComponent.call(this);
 	},
 	/**
 	 * buildTopToolbar
@@ -44,16 +44,6 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 				text: 'Delete',
 				iconCls: 'silk-delete',
 				handler: this.onDelete,
-				scope: this
-			}, '-', {
-				text: 'Go',
-				iconCls: 'silk-application-go',
-				handler: this.onGo,
-				scope: this
-			}, '-', {
-				text: 'Status',
-				iconCls: 'silk-information',
-				handler: this.onStatus,
 				scope: this
 			}];
 	},
@@ -146,21 +136,21 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 
 
-var Campaigns = {};
+var Subscribers = {};
 
 // Create HttpProxy instance.  Notice new configuration parameter "api" here instead of load.  However, you can still use
 // the "url" paramater -- All CRUD requests will be directed to your single url instead.
-Campaigns.proxy = new Ext.data.HttpProxy({
+Subscribers.proxy = new Ext.data.HttpProxy({
 	api: {
-		read: 'ajax.php?type=Campaigns&act=read',
-		create: 'ajax.php?type=Campaigns&act=create',
-		update: 'ajax.php?type=Campaigns&act=update',
-		destroy: 'ajax.php?type=Campaigns&act=destroy'
+		read: 'ajax.php?type=Subscribers&act=read',
+		create: 'ajax.php?type=Subscribers&act=create',
+		update: 'ajax.php?type=Subscribers&act=update',
+		destroy: 'ajax.php?type=Subscribers&act=destroy'
 	}
 });
 
 // Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
-Campaigns.reader = new Ext.data.JsonReader({
+Subscribers.reader = new Ext.data.JsonReader({
 	totalProperty: 'total',
 	successProperty: 'success',
 	idProperty: 'id',
@@ -168,34 +158,36 @@ Campaigns.reader = new Ext.data.JsonReader({
 	messageProperty: 'message'  // <-- New "messageProperty" meta-data
 }, [
 	{name: 'id'},
-	{name: 'name', allowBlank: false},
-	{name: 'description', allowBlank: false},
+	{name: 'first_name', allowBlank: false},
+	{name: 'last_name', allowBlank: false},
+	{name: 'email', allowBlank: false},
 ]);
 
 // The new DataWriter component.
-Campaigns.writer = new Ext.data.JsonWriter({
+Subscribers.writer = new Ext.data.JsonWriter({
 	encode: true,
 	writeAllFields: true
 });
 
 // Typical Store collecting the Proxy, Reader and Writer together.
-Campaigns.store = new Ext.data.Store({
+Subscribers.store = new Ext.data.Store({
 	id: 'campaign',
-	proxy: Campaigns.proxy,
-	reader: Campaigns.reader,
-	writer: Campaigns.writer, // <-- plug a DataWriter into the store just as you would a Reader
+	proxy: Subscribers.proxy,
+	reader: Subscribers.reader,
+	writer: Subscribers.writer, // <-- plug a DataWriter into the store just as you would a Reader
 	autoSave: true // <-- false would delay executing create, update, destroy requests until specifically told to do so with some [save] buton.
 });
 
 // load the store immeditately
-Campaigns.store.load();
+Subscribers.store.load();
 
 // A new generic text field
-Campaigns.textField = new Ext.form.TextField();
+Subscribers.textField = new Ext.form.TextField();
 
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
-Campaigns.campaignColumns = [
+Subscribers.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: Campaigns.textField},
-	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: Campaigns.textField},
+	{header: "First name", width: 100, sortable: true, dataIndex: 'first_name', editor: Subscribers.textField},
+	{header: "Last name", width: 50, sortable: true, dataIndex: 'last_name', editor: Subscribers.textField},
+	{header: "Email", width: 50, sortable: true, dataIndex: 'email', editor: Subscribers.textField},
 ];

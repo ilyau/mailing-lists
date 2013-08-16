@@ -1,14 +1,14 @@
 
-Ext.ns('App', 'App.campaigns');
+Ext.ns('App', 'App.templates');
 /**
  * App.campaigns.Grid
  * A typical EditorGridPanel extension.
  */
-App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
+App.templates.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	//renderTo: 'campaigns-grid',
 	iconCls: 'silk-grid',
 	frame: true,
-	title: 'Campaigns',
+	title: 'Templates',
 	height: 300,
 	width: 500,
 	//style: 'margin-top: 10px',
@@ -29,7 +29,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		//this.buttons = this.buildUI();
 
 		// super
-		App.campaigns.Grid.superclass.initComponent.call(this);
+		App.templates.Grid.superclass.initComponent.call(this);
 	},
 	/**
 	 * buildTopToolbar
@@ -44,16 +44,6 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 				text: 'Delete',
 				iconCls: 'silk-delete',
 				handler: this.onDelete,
-				scope: this
-			}, '-', {
-				text: 'Go',
-				iconCls: 'silk-application-go',
-				handler: this.onGo,
-				scope: this
-			}, '-', {
-				text: 'Status',
-				iconCls: 'silk-information',
-				handler: this.onStatus,
 				scope: this
 			}];
 	},
@@ -146,21 +136,21 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 
 
 
-var Campaigns = {};
+var Templates = {};
 
 // Create HttpProxy instance.  Notice new configuration parameter "api" here instead of load.  However, you can still use
 // the "url" paramater -- All CRUD requests will be directed to your single url instead.
-Campaigns.proxy = new Ext.data.HttpProxy({
+Templates.proxy = new Ext.data.HttpProxy({
 	api: {
-		read: 'ajax.php?type=Campaigns&act=read',
-		create: 'ajax.php?type=Campaigns&act=create',
-		update: 'ajax.php?type=Campaigns&act=update',
-		destroy: 'ajax.php?type=Campaigns&act=destroy'
+		read: 'ajax.php?type=Templates&act=read',
+		create: 'ajax.php?type=Templates&act=create',
+		update: 'ajax.php?type=Templates&act=update',
+		destroy: 'ajax.php?type=Templates&act=destroy'
 	}
 });
 
 // Typical JsonReader.  Notice additional meta-data params for defining the core attributes of your json-response
-Campaigns.reader = new Ext.data.JsonReader({
+Templates.reader = new Ext.data.JsonReader({
 	totalProperty: 'total',
 	successProperty: 'success',
 	idProperty: 'id',
@@ -168,34 +158,34 @@ Campaigns.reader = new Ext.data.JsonReader({
 	messageProperty: 'message'  // <-- New "messageProperty" meta-data
 }, [
 	{name: 'id'},
-	{name: 'name', allowBlank: false},
-	{name: 'description', allowBlank: false},
+	{name: 'title', allowBlank: false},
+	{name: 'template', allowBlank: false},
 ]);
 
 // The new DataWriter component.
-Campaigns.writer = new Ext.data.JsonWriter({
+Templates.writer = new Ext.data.JsonWriter({
 	encode: true,
 	writeAllFields: true
 });
 
 // Typical Store collecting the Proxy, Reader and Writer together.
-Campaigns.store = new Ext.data.Store({
-	id: 'campaign',
-	proxy: Campaigns.proxy,
-	reader: Campaigns.reader,
-	writer: Campaigns.writer, // <-- plug a DataWriter into the store just as you would a Reader
+Templates.store = new Ext.data.Store({
+	id: 'template',
+	proxy: Templates.proxy,
+	reader: Templates.reader,
+	writer: Templates.writer, // <-- plug a DataWriter into the store just as you would a Reader
 	autoSave: true // <-- false would delay executing create, update, destroy requests until specifically told to do so with some [save] buton.
 });
 
 // load the store immeditately
-Campaigns.store.load();
+Templates.store.load();
 
 // A new generic text field
-Campaigns.textField = new Ext.form.TextField();
+Templates.textField = new Ext.form.TextField();
 
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
-Campaigns.campaignColumns = [
+Templates.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
-	{header: "Name", width: 100, sortable: true, dataIndex: 'name', editor: Campaigns.textField},
-	{header: "Description", width: 50, sortable: true, dataIndex: 'description', editor: Campaigns.textField},
+	{header: "Titlte", width: 100, sortable: true, dataIndex: 'title', editor: Templates.textField},
+	{header: "Template", width: 50, sortable: true, dataIndex: 'template', editor: Templates.textField},
 ];

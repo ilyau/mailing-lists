@@ -7,6 +7,8 @@ class Model {
 
 	private function getSetString($attributes) {
 
+		$sql = "";
+
 		foreach($this->attributes as $i => $attr) {
 			if(isset($attributes[$attr])) {
 				$sql .= " {$attr}=:{$attr}";
@@ -30,13 +32,13 @@ class Model {
 	
 	public function read() {
 		
-		$listRes = App::get()->db()->query('SELECT * FROM ' . $this->table_name);
-		$listRes->setFetchMode(PDO::FETCH_ASSOC);
+		$itemsRes = App::get()->db()->query('SELECT * FROM ' . $this->table_name);
+		$itemsRes->setFetchMode(PDO::FETCH_ASSOC);
 
 		$resultArr = array();
 
-		while ($list = $listRes->fetch()) {
-			$resultArr['data'][] = $list;
+		while ($item = $itemsRes->fetch()) {
+			$resultArr['data'][] = $item;
 		}
 
 		return $resultArr;
@@ -47,19 +49,9 @@ class Model {
 		
 		$sql = 'INSERT INTO ' . $this->table_name . ' SET' . $this->getSetString($attributes);
 		
-		foreach($this->attributes as $i => $attr) {
-			if(isset($attributes[$attr])) {
-				$sql .= " {$attr}=:{$attr}";
-				$sql .= count($this->attributes) == $i+1 ? '' : ',';
-
-			} else {
-				return "error: attribute $attr not found";
-			}
-		}
-
 		$command = App::get()->db()->prepare($sql);
 
-		return $command->execute(getParamsArray($attributes));
+		return $command->execute($this->getParamsArray($attributes));
 	}
 
 	public function destroy($id) {
@@ -80,7 +72,7 @@ class Model {
 		
 		$command = App::get()->db()->prepare('UPDATE ' . $this->table_name . ' SET' . $this->getSetString($attributes) .' WHERE id=' . (int) $id );
 		
-		return $result = $command->execute(getParamsArray($attributes));
+		return $result = $command->execute($this->getParamsArray($attributes));
 	}
 
 }

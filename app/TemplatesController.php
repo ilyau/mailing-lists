@@ -1,12 +1,12 @@
 <?php
 
-class ListsController extends Controller {
+class TemplatesController extends Controller {
 	
 	public function readAction() {
 		
-		$list = new ListModel();
+		$template = new TemplateModel();
 		
-		$result = $list->read();
+		$result = $template->read();
 
 		echo json_encode($result);
 
@@ -17,8 +17,8 @@ class ListsController extends Controller {
 
 		$data = json_decode($_REQUEST['data'], true);
 
-		$list = new ListModel();
-		$result = $list->create($data);
+		$template = new TemplateModel();
+		$result = $template->create($data);
 
 		if ($result) {
 			$response->success = true;
@@ -35,8 +35,8 @@ class ListsController extends Controller {
 
 		$data = json_decode($_REQUEST['data'], true);
 
-		$list = new ListModel();
-		$result = $list->destroy((int) $data);
+		$template = new TemplateModel();
+		$result = $template->destroy((int) $data);
 
 		if ($result) {
 			$response->success = true;
@@ -54,8 +54,8 @@ class ListsController extends Controller {
 		$data = json_decode($_REQUEST['data'], true);
 		$id = $data['id'];
 		
-		$list = new ListModel();
-		$result = $list->update($id, $data);
+		$template = new TemplateModel();
+		$result = $template->update($id, $data);
 		
 		if($result) {
 			$response->success = true;
