@@ -1,6 +1,6 @@
 <?php
 
-class TemplatesController extends Controller {
+class TemplatesController extends CrudController {
 	
 	public function readAction() {
 		

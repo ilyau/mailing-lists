@@ -1,6 +1,6 @@
 <?php
 
-class SubscribersController extends Controller {
+class SubscribersController extends CrudController {
 	
 	public function readAction() {
 		

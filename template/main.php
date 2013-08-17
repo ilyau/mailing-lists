@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Document</title>
+		<title>Управление рассылками</title>
 		<link rel="stylesheet" href="/ext-3.4.1/resources/css/ext-all.css">
 		<script type="text/javascript" src="/ext-3.4.1/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="/ext-3.4.1/ext-all-debug.js"></script>

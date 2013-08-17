@@ -135,6 +135,22 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	 */
 	onGo: function(btn, ev) {
 
+		var index = this.getSelectionModel().getSelectedCell();
+		if (!index) {
+			return false;
+		}
+
+		var rec = this.store.getAt(index[0]);
+
+		var id = rec.id;
+
+		Ext.Ajax.request({
+		   url: '/ajax.php?type=Worker&act=run',
+		   success: function() {
+		   		
+		   },
+		   params: { id: id}
+		});
 	},
 	/**
 	 * onStatus

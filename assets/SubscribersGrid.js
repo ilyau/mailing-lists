@@ -185,6 +185,16 @@ Subscribers.store.load();
 // A new generic text field
 Subscribers.textField = new Ext.form.TextField();
 
+Subscribers.comboList = new Ext.form.ComboBox({
+			typeAhead: true,
+			triggerAction: 'all',
+			store: Lists.store,
+			lazyRender: true,
+			mode: 'remote',
+			valueField: 'id',
+			displayField: 'name'
+		});
+
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Subscribers.campaignColumns = [
 	{header: "ID", width: 10, sortable: true, dataIndex: 'id'},
@@ -192,7 +202,7 @@ Subscribers.campaignColumns = [
 	{header: "Last name", width: 80, sortable: true, dataIndex: 'last_name', editor: Subscribers.textField},
 	{header: "Email", width: 70, sortable: true, dataIndex: 'email', editor: Subscribers.textField},
 	{header: "List", width: 70, sortable: true, dataIndex: 'id_list',
-		editor: Campaigns.comboList, renderer: Ext.util.Format.comboRenderer(Campaigns.comboList)
+		editor: Subscribers.comboList, renderer: Ext.util.Format.comboRenderer(Subscribers.comboList)
 
 	},
 ];

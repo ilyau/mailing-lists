@@ -1,6 +1,6 @@
 <?php
 
-class ListsController extends Controller {
+class ListsController extends CrudController {
 	
 	public function readAction() {
 		

@@ -1,6 +1,6 @@
 <?php
 
-class CampaignsController extends Controller {
+class CampaignsController extends CrudController {
 	public function readAction() {
 		
 		$campaign = new CampaignModel();
