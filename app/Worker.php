@@ -29,6 +29,7 @@ class Worker {
 				  "Тема письма: {$data["name"]}\n" .
 				  "Письмо: {$data["template"]}\n";
 
+		echo $letter . "\n";
 		App::get()->log($letter);
 		sleep(1);
 		// 
