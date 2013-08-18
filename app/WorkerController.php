@@ -36,7 +36,13 @@ class WorkerController extends Controller {
 		$client->addServer();
 
 		// get subscribers
-		$cmd = App::get()->db()->prepare('SELECT * FROM subscriber WHERE id_list=(SELECT id_list FROM campaign WHERE id=:id)');
+		//$cmd = App::get()->db()->prepare('SELECT * FROM subscriber WHERE id_list=(SELECT id_list FROM campaign WHERE id=:id)');
+		$cmd = App::get()->db()->prepare('SELECT * 
+										  FROM subscriber, campaign, template 
+										  WHERE subscriber.id_list=campaign.id_list AND template.id = campaign.id_template AND campaign.id=:id');
+		
+		
+
 		$cmd->bindParam(':id', $campaign_id);
 		$cmd->execute();
 

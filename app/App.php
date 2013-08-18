@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of App
+ * Application
  *
  * @author user
  */
@@ -44,13 +44,15 @@ class App {
 		return self::$app;
 	}
 
-	public function log($str)
-	{
+	public function log($str) {
+
+		$str_to_log = date('d.m.y H:i:s') . " - " . $str . "\n";
+
 		if($this->log == NULL) {
 			$this->log = dirname(__FILE__) . "/log.txt";
-			file_put_contents($this->log, $str . "\n", LOCK_EX);
+			file_put_contents($this->log, $str_to_log, LOCK_EX);
 		} else {
-			file_put_contents($this->log, $str . "\n", FILE_APPEND | LOCK_EX);
+			file_put_contents($this->log, $str_to_log, FILE_APPEND | LOCK_EX);
 		}
 	}
 

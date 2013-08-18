@@ -24,15 +24,19 @@ class Worker {
 		App::get()->db()->exec('UPDATE task SET status="running" WHERE id=' . (int) $data['task_id'] );
 
 		// отправка письма
-		//sleep(1);
-		App::get()->log($job->handle());
+		$letter = "Письмо отправлено:\n" .
+				  "Получатель: {$data['first_name']} {$data['last_name']}\n" .
+				  "Тема письма: {$data["name"]}\n" .
+				  "Письмо: {$data["template"]}\n";
 
-		App::get()->db()->exec('UPDATE task SET status="done" WHERE id=' . (int) $data['task_id'] );
+		App::get()->log($letter);
+		sleep(1);
+		// 
 
-		// проверка
+		App::get()->db()->exec('UPDATE task SET status="done" WHERE id=' . (int) $data['task_id']);
+
+		// проверка и завершения кампании
 		$campaign = new CampaignModel;
-		$isCompleted = $campaign->isCompleted($data['campaign_id']);
-
-		echo "\nis completed: " . var_export($isCompleted, true);
+		$campaign->isCompleted($data['campaign_id']);
 	}
 }
