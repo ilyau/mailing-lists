@@ -12,7 +12,7 @@ class CampaignModel extends Model {
 		return parent::create($attributes);
 	}
 
-	public function isComplete($id) {
+	public function isCompleted($id) {
 		
 		$id = (int) $id;
 
@@ -22,13 +22,13 @@ class CampaignModel extends Model {
 		$cmd = App::get()->db()->query('SELECT COUNT(*) FROM task WHERE id_campaign=' . $id);
 		$all = $cmd->fetch();
 
-		$isComplete = $done[0] == $all[0];
+		$isCompleted = $done[0] == $all[0];
 
-		if($isComplete) {
-			App::get()->db()->exec('UPDATE campaign SET status="complete" WHERE id=' . $id);
+		if($isCompleted) {
+			App::get()->db()->exec('UPDATE campaign SET status="completed" WHERE id=' . $id);
 		}
 
-		return $isComplete;
+		return $isCompleted;
 	}
 
 	public function getStatus($id) {

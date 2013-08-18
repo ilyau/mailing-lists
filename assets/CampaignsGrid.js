@@ -2,16 +2,13 @@
 Ext.ns('App', 'App.campaigns');
 /**
  * App.campaigns.Grid
- * A typical EditorGridPanel extension.
  */
 App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
-	//renderTo: 'campaigns-grid',
 	iconCls: 'silk-grid',
 	frame: true,
 	title: 'Campaigns',
 	height: 300,
 	width: 700,
-	//style: 'margin-top: 10px',
 	autoSave: true,
 	initComponent: function() {
 
@@ -49,12 +46,17 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 				text: 'Go',
 				iconCls: 'silk-application-go',
 				handler: this.onGo,
-				scope: this
+				scope: this,
 			}, '-', {
 				text: 'Status',
 				iconCls: 'silk-information',
 				handler: this.onStatus,
-				scope: this
+				scope: this,
+			}, '-', {
+				text: 'Refresh campaigns',
+				iconCls: 'silk-table-refresh',
+				handler: this.onRefresh,
+				scope: this,
 			}];
 	},
 	/**
@@ -100,12 +102,14 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 				scope: this
 			}];
 	},
+	
 	/**
 	 * onSave
 	 */
 	onSave: function(btn, ev) {
 		this.store.save();
 	},
+	
 	/**
 	 * onAdd
 	 */
@@ -119,6 +123,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		this.store.insert(0, u);
 		this.startEditing(0, 1);
 	},
+	
 	/**
 	 * onDelete
 	 */
@@ -179,7 +184,7 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	},
 
 	/**
-	 * 
+	 * store status window
 	 */
 	statusWin: false, 
 
@@ -214,8 +219,15 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 			        
 					progressBar.updateProgress(progress, obj[0] + "/" + obj[1]);
 
-					if(obj[0] == obj[1])
+					if(obj[0] == obj[1] )
 						clearInterval(intervalUpdate);
+
+					if(obj[0] == obj[1] && parseInt(obj[0]) == 0)
+						_this.statusWin.update('<p>Campaign not running</p>');
+
+					if(obj[0] == obj[1] && parseInt(obj[0]) != 0)
+						_this.statusWin.update('<p>Campaign completed</p>');
+
 			   },
 			   params: { id: id}
 			});
@@ -225,7 +237,6 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		if(!_this.statusWin){
 	        _this.statusWin = new Ext.Window({
 	            title: "Статус кампании",
-	            // layout:'fit',
 	            width:300,
 	            height:120,
 	            bodyStyle: 'margin-top: 20px',
@@ -251,6 +262,10 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	        });
 	    }
 	    this.statusWin.show(this);
+	},
+
+	onRefresh: function() {
+		this.store.reload();
 	}
 });
 
@@ -346,5 +361,5 @@ Campaigns.campaignColumns = [
 	{header: "Template", width: 80, sortable: true, dataIndex: 'id_template',
 		editor: Campaigns.comboTemplate, renderer: Ext.util.Format.comboRenderer(Campaigns.comboTemplate)
 	},
-	{header: "Status", width: 30, sortable: true, dataIndex: 'status'},
+	{header: "Status", width: 40, sortable: true, dataIndex: 'status'},
 ];

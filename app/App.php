@@ -8,6 +8,7 @@
 class App {
 
 	private $db;
+	private $log;
 	private static $config;
 	private static $app;
 	
@@ -41,6 +42,16 @@ class App {
 
 	public static function get() {
 		return self::$app;
+	}
+
+	public function log($str)
+	{
+		if($this->log == NULL) {
+			$this->log = dirname(__FILE__) . "/log.txt";
+			file_put_contents($this->log, $str . "\n", LOCK_EX);
+		} else {
+			file_put_contents($this->log, $str . "\n", FILE_APPEND | LOCK_EX);
+		}
 	}
 
 

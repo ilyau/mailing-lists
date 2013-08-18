@@ -20,6 +20,16 @@ class WorkerController extends Controller {
 			exit;
 		}
 
+		$r = App::get()->db()->query('SELECT status FROM campaign WHERE id=' . $campaign_id);
+		$status = $r->fetchColumn();
+
+		if($status == "completed") {
+			$response->success = false;
+			$response->message = "Кампания уже завершена, создайте новую.";
+			echo $response->to_json();
+			exit;
+		}
+
 		App::get()->db()->exec('UPDATE campaign SET status="running" WHERE id=' . $campaign_id );
 
 		$client = new GearmanClient();
@@ -53,11 +63,6 @@ class WorkerController extends Controller {
 		echo $response->to_json();
 	}
 
-	public function testAction()
-	{
-		$r = App::get()->db()->exec('UPDATE campaign SET status="complete" WHERE id=11');
 
-		var_dump($r);
-	}
 
 }

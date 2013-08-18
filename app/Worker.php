@@ -24,12 +24,15 @@ class Worker {
 		App::get()->db()->exec('UPDATE task SET status="running" WHERE id=' . (int) $data['task_id'] );
 
 		// отправка письма
-		sleep(7);
+		//sleep(1);
+		App::get()->log($job->handle());
 
 		App::get()->db()->exec('UPDATE task SET status="done" WHERE id=' . (int) $data['task_id'] );
 
 		// проверка
 		$campaign = new CampaignModel;
-		$campaign->isComplete($data['campaign_id']);
+		$isCompleted = $campaign->isCompleted($data['campaign_id']);
+
+		echo "\nis completed: " . var_export($isCompleted, true);
 	}
 }
