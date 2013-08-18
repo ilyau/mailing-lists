@@ -130,33 +130,127 @@ App.campaigns.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		var rec = this.store.getAt(index[0]);
 		this.store.remove(rec);
 	},
-	/**
-	 * onGo
-	 */
-	onGo: function(btn, ev) {
+
+	getSelectionRowId: function() {
 
 		var index = this.getSelectionModel().getSelectedCell();
+		
 		if (!index) {
 			return false;
 		}
 
 		var rec = this.store.getAt(index[0]);
 
-		var id = rec.id;
-
-		Ext.Ajax.request({
-		   url: '/ajax.php?type=Worker&act=run',
-		   success: function() {
-		   		
-		   },
-		   params: { id: id}
-		});
+		return rec.id;
 	},
+
+
+	/**
+	 * onGo
+	 */
+	onGo: function(btn, ev) {
+
+		var _this = this; 
+
+		var id = _this.getSelectionRowId();
+
+		if(!id)
+ 			return false;
+
+		Ext.MessageBox.confirm('Confirm', 'Вы уверены, что хотите начать рассылку?', function(btn) {
+
+			if(btn == "yes") {
+
+				Ext.Ajax.request({
+				   url: '/ajax.php?type=Worker&act=run',
+				   success: function(m) {
+
+				   		m = Ext.decode(m.responseText);
+
+						App.setAlert(App.STATUS_NOTICE, m.message); 
+						_this.store.reload();
+				   },
+				   params: { id: id}
+				});
+			}
+
+		});
+
+	},
+
+	/**
+	 * 
+	 */
+	statusWin: false, 
+
+
 	/**
 	 * onStatus
 	 */
 	onStatus: function(btn, ev) {
 
+		var _this = this; // App.campaigns.Grid
+
+		var intervalUpdate;
+
+		var id = _this.getSelectionRowId();
+
+		if(!id)
+ 			return false;
+
+		var progressBar = new Ext.ProgressBar({
+	            	      	text:'Status loading...',
+	            	    });
+
+		var intervalCallback = function() {
+
+			Ext.Ajax.request({
+			   url: '/ajax.php?type=Campaigns&act=status',
+			   success: function(m) {
+
+					var obj = Ext.decode(m.responseText);
+
+			        var progress = parseFloat(obj[0]) / parseFloat(obj[1]);
+			        
+					progressBar.updateProgress(progress, obj[0] + "/" + obj[1]);
+
+					if(obj[0] == obj[1])
+						clearInterval(intervalUpdate);
+			   },
+			   params: { id: id}
+			});
+
+		}
+
+		if(!_this.statusWin){
+	        _this.statusWin = new Ext.Window({
+	            title: "Статус кампании",
+	            // layout:'fit',
+	            width:300,
+	            height:120,
+	            bodyStyle: 'margin-top: 20px',
+	            closeAction:'hide',
+	            plain: true,
+	            buttons: [{
+	                text: 'Close',
+	                handler: function(){
+	                    _this.statusWin.hide();
+	                }
+	            }],
+	            items: progressBar,
+
+	            listeners: {
+	            	'beforeshow': function() {
+	            		intervalUpdate = setInterval(intervalCallback, 2000);
+	            		intervalCallback();
+	            	},
+	            	'hide': function() {
+	            		clearInterval(intervalUpdate);
+	            	}
+	            }
+	        });
+	    }
+	    this.statusWin.show(this);
 	}
 });
 
@@ -188,6 +282,7 @@ Campaigns.reader = new Ext.data.JsonReader({
 	{name: 'description', allowBlank: false},
 	{name: 'id_list', allowBlank: false},
 	{name: 'id_template', allowBlank: false},
+	{name: 'status'}
 ]);
 
 // The new DataWriter component.
@@ -239,8 +334,6 @@ Campaigns.comboTemplate = new Ext.form.ComboBox({
 			displayField: 'title'
 		});
 
-
-
 // Let's pretend we rendered our grid-columns with meta-data from our ORM framework.
 Campaigns.campaignColumns = [
 	{header: "ID", width: 20, sortable: true, dataIndex: 'id'},
@@ -253,4 +346,5 @@ Campaigns.campaignColumns = [
 	{header: "Template", width: 80, sortable: true, dataIndex: 'id_template',
 		editor: Campaigns.comboTemplate, renderer: Ext.util.Format.comboRenderer(Campaigns.comboTemplate)
 	},
+	{header: "Status", width: 30, sortable: true, dataIndex: 'status'},
 ];

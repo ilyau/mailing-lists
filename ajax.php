@@ -4,7 +4,7 @@ require dirname(__FILE__) . '/app/init.php';
 
 header('Content-type: application/json');
 
-// crud operations
+// run controller
 if (isset($_REQUEST['type']) && isset($_REQUEST['act'])) {
 
 	$class = $_REQUEST['type'] . 'Controller';

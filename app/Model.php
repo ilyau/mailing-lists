@@ -66,12 +66,12 @@ class Model {
 		if(isset($attributes['id']))
 			unset($attributes['id']);
 
-		$response = new Response();
-		
-		$data = json_decode($_REQUEST['data'], true);
-		
-		$command = App::get()->db()->prepare('UPDATE ' . $this->table_name . ' SET' . $this->getSetString($attributes) .' WHERE id=' . (int) $id );
-		
+
+		$sql = 	'UPDATE ' . $this->table_name . ' SET' . $this->getSetString($attributes) .' WHERE id=' . (int) $id;
+		$command = App::get()->db()->prepare($sql);
+
+		//echo $sql;
+
 		return $result = $command->execute($this->getParamsArray($attributes));
 	}
 

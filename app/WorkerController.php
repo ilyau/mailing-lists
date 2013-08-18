@@ -8,14 +8,22 @@
 class WorkerController extends Controller {
 
 	public function runAction() {
+
+		$response = new Response;
 		
-		if(isset($_REQUEST['id']))
+		if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
 			$campaign_id = (int) $_REQUEST['id'];
+		} else {
+			$response->success = false;
+			$response->message = "Выберите кампанию";
+			echo $response->to_json();
+			exit;
+		}
+
+		App::get()->db()->exec('UPDATE campaign SET status="running" WHERE id=' . $campaign_id );
 
 		$client = new GearmanClient();
 		$client->addServer();
-
-		$client->setStatusCallback(array("WorkerController", "status"));
 
 		// get subscribers
 		$cmd = App::get()->db()->prepare('SELECT * FROM subscriber WHERE id_list=(SELECT id_list FROM campaign WHERE id=:id)');
@@ -39,16 +47,17 @@ class WorkerController extends Controller {
 		
 		$client->runTasks();
 
-		$response = new Response;
 		$response->success = true;
 		$response->message = "Кампания запущена";
 
 		echo $response->to_json();
 	}
 
-	public static function status($task)
+	public function testAction()
 	{
-		echo "STATUS: " . $task->unique() . ", " . $task->jobHandle() . " - " . $task->taskNumerator() . 
-         "/" . $task->taskDenominator() . "\n";
+		$r = App::get()->db()->exec('UPDATE campaign SET status="complete" WHERE id=11');
+
+		var_dump($r);
 	}
+
 }

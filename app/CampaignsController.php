@@ -1,6 +1,7 @@
 <?php
 
 class CampaignsController extends CrudController {
+	
 	public function readAction() {
 		
 		$campaign = new CampaignModel();
@@ -9,6 +10,7 @@ class CampaignsController extends CrudController {
 		echo json_encode($result);
 
 	}
+	
 	public function createAction() {
 		
 		$response = new Response();
@@ -21,7 +23,7 @@ class CampaignsController extends CrudController {
 
 			$response->success = true;
 			$response->message = "Created record";
-			$response->data = array_merge(array('id' => App::get()->db()->lastInsertId()), $data);
+			$response->data = array_merge(array('id' => App::get()->db()->lastInsertId(), 'status' => 'new'), $data);
 		} else {
 			$response->success = false;
 		}
@@ -46,6 +48,7 @@ class CampaignsController extends CrudController {
 
 		echo $response->to_json();
 	}
+	
 	public function updateAction() {
 		$response = new Response();
 		
@@ -64,4 +67,17 @@ class CampaignsController extends CrudController {
 
 		echo $response->to_json();
 	}
+
+
+	public function statusAction()
+	{
+		if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+
+			$id = (int) $_REQUEST['id'];
+ 			
+			$campaign = new CampaignModel;
+			echo json_encode($campaign->getStatus($id));
+		}
+	}
+
 }
