@@ -7,8 +7,6 @@
 		<script type="text/javascript" src="/ext-3.4.1/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="/ext-3.4.1/ext-all-debug.js"></script>
 
-
-
 		<script type="text/javascript" src="/assets/App.js"></script>
 		<script type="text/javascript" src="/assets/writer.js"></script>
 		<script type="text/javascript" src="/assets/ListsGrid.js"></script>
@@ -18,12 +16,12 @@
 
 		<!-- Common Styles for the examples -->
 		<link rel="stylesheet" type="text/css" href="/ext-3.4.1/examples/shared/examples.css" />
-		<link rel="stylesheet" type="text/css" href="/ext-3.4.1/examples/shared/icons/silk.css" />
+		<link rel="stylesheet" type="text/css" href="/resources/icons/silk.css" />
 	</head>
 	<body>
 		
 		<h1>Управление рассылками</h1>
-		<p>Основные принципы взяты с сервиса MailChimp. Есть кампании, списки подписчиков, подписчики и шаблоны писем. В клиентской части реализованы CRUD-операции.</p>
+		<p>Основные принципы взяты с сервиса MailChimp. Есть кампании, списки подписчиков, подписчики и шаблоны писем. В клиентской части реализованы CRUD-операции. Во вкладке Campaigns можно запустить кампанию. Для этого нужно выделить любую ячейку кампании, которую надо запустить и нажать кнопку Go в top toolbar. После подтверждения статус компании изменится на running</p>
 		
 		<div id="tabs"></div>
 		
