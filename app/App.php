@@ -56,7 +56,6 @@ class App {
 		}
 	}
 
-
 	const TPLPATH = '/template/';
 
 	public function view() {
