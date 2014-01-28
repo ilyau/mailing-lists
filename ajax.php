@@ -7,18 +7,18 @@ header('Content-type: application/json');
 // run controller
 if (isset($_REQUEST['type']) && isset($_REQUEST['act'])) {
 
-	$class = $_REQUEST['type'] . 'Controller';
-	$method = $_REQUEST['act'] . 'Action';
+    $class = $_REQUEST['type'] . 'Controller';
+    $method = $_REQUEST['act'] . 'Action';
 
-	$controller = new ReflectionClass($class);
+    $controller = new ReflectionClass($class);
 
-	if ($controller->isSubclassOf('Controller')) {
+    if ($controller->isSubclassOf('Controller')) {
 
-		$reflectionMethod = new ReflectionMethod($class, $method);
-		$reflectionMethod->invoke(new $class());
-	} else {
-		echo 'not subclass of controller';
-	}
+        $reflectionMethod = new ReflectionMethod($class, $method);
+        $reflectionMethod->invoke(new $class());
+    } else {
+        echo 'not subclass of controller';
+    }
 } else {
-	echo "not exits type or act";
+    echo "not exits type or act";
 }

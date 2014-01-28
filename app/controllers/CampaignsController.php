@@ -1,83 +1,86 @@
 <?php
 
-class CampaignsController extends CrudController {
-	
-	public function readAction() {
-		
-		$campaign = new CampaignModel();
-		$result = $campaign->read();
+class CampaignsController extends CrudController
+{
 
-		echo json_encode($result);
+    public function readAction()
+    {
 
-	}
-	
-	public function createAction() {
-		
-		$response = new Response();
-		$data = json_decode($_REQUEST['data'], true);
+        $campaign = new CampaignModel();
+        $result = $campaign->read();
 
-		$campaign = new CampaignModel;
-		$result = $campaign->create($data);
+        echo json_encode($result);
+    }
 
-		if ($result) {
+    public function createAction()
+    {
 
-			$response->success = true;
-			$response->message = "Created record";
-			$response->data = array_merge(array('id' => App::get()->db()->lastInsertId(), 'status' => 'new'), $data);
-		} else {
-			$response->success = false;
-		}
+        $response = new Response();
+        $data = json_decode($_REQUEST['data'], true);
 
-		echo $response->to_json();
-	}
-	
-	public function destroyAction() {
-		$response = new Response();
+        $campaign = new CampaignModel;
+        $result = $campaign->create($data);
 
-		$data = json_decode($_REQUEST['data'], true);
+        if ($result) {
 
-		$campaign = new CampaignModel();
-		$result = $campaign->destroy((int) $data);
+            $response->success = true;
+            $response->message = "Created record";
+            $response->data = array_merge(array('id' => App::get()->db()->lastInsertId(), 'status' => 'new'), $data);
+        } else {
+            $response->success = false;
+        }
 
-		if ($result) {
-			$response->success = true;
-			$response->message = "Removed campaign";
-		} else {
-			$response->success = false;
-		}
+        echo $response->to_json();
+    }
 
-		echo $response->to_json();
-	}
-	
-	public function updateAction() {
-		$response = new Response();
-		
-		$data = json_decode($_REQUEST['data'], true);
-		
-		$id = $data['id'];
-		
-		$campaign = new CampaignModel();
-		$result = $campaign->update($id, $data);
-		
-		if($result) {
-			$response->success = true;
-			$response->message = "Updated record";
-			$response->data = $data;
-		}
+    public function destroyAction()
+    {
+        $response = new Response();
 
-		echo $response->to_json();
-	}
+        $data = json_decode($_REQUEST['data'], true);
 
+        $campaign = new CampaignModel();
+        $result = $campaign->destroy((int) $data);
 
-	public function statusAction()
-	{
-		if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+        if ($result) {
+            $response->success = true;
+            $response->message = "Removed campaign";
+        } else {
+            $response->success = false;
+        }
 
-			$id = (int) $_REQUEST['id'];
- 			
-			$campaign = new CampaignModel;
-			echo json_encode($campaign->getStatus($id));
-		}
-	}
+        echo $response->to_json();
+    }
+
+    public function updateAction()
+    {
+        $response = new Response();
+
+        $data = json_decode($_REQUEST['data'], true);
+
+        $id = $data['id'];
+
+        $campaign = new CampaignModel();
+        $result = $campaign->update($id, $data);
+
+        if ($result) {
+            $response->success = true;
+            $response->message = "Updated record";
+            $response->data = $data;
+        }
+
+        echo $response->to_json();
+    }
+
+    public function statusAction()
+    {
+        if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+
+            $id = (int) $_REQUEST['id'];
+
+            $campaign = new CampaignModel;
+            echo json_encode($campaign->getStatus($id));
+        }
+    }
 
 }

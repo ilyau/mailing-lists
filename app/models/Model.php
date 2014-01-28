@@ -1,78 +1,76 @@
 <?php
 
-class Model {
-	
-	protected $table_name;
-	protected $attributes;
+class Model
+{
+    protected $table_name;
+    protected $attributes;
 
-	private function getSetString($attributes) {
+    private function getSetString($attributes)
+    {
+        $sql = "";
 
-		$sql = "";
+        foreach ($this->attributes as $i => $attr) {
+            if (isset($attributes[$attr])) {
+                $sql .= " {$attr}=:{$attr}";
+                $sql .= count($this->attributes) == $i + 1 ? '' : ',';
+            } else {
+                return false;
+            }
+        }
 
-		foreach($this->attributes as $i => $attr) {
-			if(isset($attributes[$attr])) {
-				$sql .= " {$attr}=:{$attr}";
-				$sql .= count($this->attributes) == $i+1 ? '' : ',';
+        return $sql;
+    }
 
-			} else {
-				return false;
-			}
-		}
+    private function getParamsArray($attributes)
+    {
+        $params = array();
+        foreach ($attributes as $index => $attr_value) {
+            $params[':' . $index] = $attr_value;
+        }
+        return $params;
+    }
 
-		return $sql;
-	}
+    public function read()
+    {
+        $itemsRes = App::get()->db()->query('SELECT * FROM ' . $this->table_name);
+        $itemsRes->setFetchMode(PDO::FETCH_ASSOC);
 
-	private function getParamsArray($attributes) {
-		$params = array();
-		foreach($attributes as $index => $attr_value) {
-			$params[':' . $index] = $attr_value;
-		}
-		return $params;
-	}
-	
-	public function read() {
-		
-		$itemsRes = App::get()->db()->query('SELECT * FROM ' . $this->table_name);
-		$itemsRes->setFetchMode(PDO::FETCH_ASSOC);
+        $resultArr = array();
 
-		$resultArr = array();
+        while ($item = $itemsRes->fetch()) {
+            $resultArr['data'][] = $item;
+        }
 
-		while ($item = $itemsRes->fetch()) {
-			$resultArr['data'][] = $item;
-		}
+        return $resultArr;
+    }
 
-		return $resultArr;
+    public function create(array $attributes)
+    {
+        $sql = 'INSERT INTO ' . $this->table_name . ' SET' . $this->getSetString($attributes);
 
-	}
+        $command = App::get()->db()->prepare($sql);
 
-	public function create(array $attributes) {
-		
-		$sql = 'INSERT INTO ' . $this->table_name . ' SET' . $this->getSetString($attributes);
-		
-		$command = App::get()->db()->prepare($sql);
+        return $command->execute($this->getParamsArray($attributes));
+    }
 
-		return $command->execute($this->getParamsArray($attributes));
-	}
+    public function destroy($id)
+    {
+        $result = App::get()->db()->exec('DELETE FROM ' . $this->table_name . ' WHERE id=' . (int) $id);
 
-	public function destroy($id) {
+        return $result;
+    }
 
-		$result = App::get()->db()->exec('DELETE FROM ' . $this->table_name . ' WHERE id=' . (int) $id);
+    public function update($id, $attributes)
+    {
+        if (isset($attributes['id'])) {
+            unset($attributes['id']);
+        }
 
-		return $result;
-	}
-	
-	public function update($id, $attributes) {
+        $sql = 'UPDATE ' . $this->table_name . ' SET' . $this->getSetString($attributes) . ' WHERE id=' . (int) $id;
+        $command = App::get()->db()->prepare($sql);
 
-		if(isset($attributes['id']))
-			unset($attributes['id']);
+        //echo $sql;
 
-
-		$sql = 	'UPDATE ' . $this->table_name . ' SET' . $this->getSetString($attributes) .' WHERE id=' . (int) $id;
-		$command = App::get()->db()->prepare($sql);
-
-		//echo $sql;
-
-		return $result = $command->execute($this->getParamsArray($attributes));
-	}
-
+        return $result = $command->execute($this->getParamsArray($attributes));
+    }
 }

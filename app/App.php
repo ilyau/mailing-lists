@@ -1,81 +1,89 @@
 <?php
 
-/**
- * Application
- *
- * @author user
- */
-class App {
+class App
+{
 
-	private $db;
-	private $log;
-	private static $config;
-	private static $app;
-	
-	public function db() {
+    const TPLPATH = '/template/';
 
-		if($this->db == NULL) {
-			$this->db = new PDO(self::$config['db']['type'] . ':host=' .  self::$config['db']['host'] . ';dbname=' . self::$config['db']['database']
-							,self::$config['db']['user']
-							,self::$config['db']['password']);
+    private $_db;
+    private $_log;
+    private static $config;
+    private static $app;
 
-			$this->db->query("SET CHARACTER SET utf8");
-		}		
+    public function db()
+    {
 
-		return $this->db;
-	}
+        if ($this->_db == NULL) {
+            $this->_db = new PDO(self::$config['db']['type'] . ':host=' . self::$config['db']['host'] . ';dbname=' . self::$config['db']['database'], self::$config['db']['user'], self::$config['db']['password']);
 
-	private function __construct() {}
-	private function __clone()    {}
-	private function __wakeup() {}
+            $this->_db->query("SET CHARACTER SET utf8");
+        }
 
-	public static function create($config) {
-		
-		if(!self::$app) {
-			$class = __CLASS__;
-			self::$app = new $class();
-			self::$config = include $config;
-		}
+        return $this->_db;
+    }
 
-		return self::$app;
-	}
+    private function __construct()
+    {
 
-	public static function get() {
-		return self::$app;
-	}
+    }
 
-	public function log($str) {
+    private function __clone()
+    {
 
-		$str_to_log = date('d.m.y H:i:s') . " - " . $str . "\n";
+    }
 
-		if($this->log == NULL) {
-			$this->log = dirname(__FILE__) . "/log.txt";
-			file_put_contents($this->log, $str_to_log, LOCK_EX);
-		} else {
-			file_put_contents($this->log, $str_to_log, FILE_APPEND | LOCK_EX);
-		}
-	}
+    private function __wakeup()
+    {
 
-	const TPLPATH = '/template/';
+    }
 
-	public function view() {
+    public static function create($config)
+    {
+        if (!self::$app) {
+            $class = __CLASS__;
+            self::$app = new $class();
+            self::$config = include $config;
+        }
 
-		echo $this->template('main.php');
-	}
+        return self::$app;
+    }
 
-	/**
-	 * Шаблонизатор
-	 *
-	 * @param $template - путь до файла шаблона
-	 * @param $v - ассоциативный массив значений переданных в шаблон
-	 * @return - результат работы шаблона
-	 * @example _tpl_('blog/root.php', array('title'=>'Hi!'))
-	 */
-	public function template($template, $v = array()) {
-		extract($v, EXTR_SKIP);
-		ob_start();
-		include($_SERVER['DOCUMENT_ROOT'] . self::TPLPATH . $template);
-		return ob_get_clean();
-	}
+    public static function get()
+    {
+        return self::$app;
+    }
+
+    public function log($str)
+    {
+        $str_to_log = date('d.m.y H:i:s') . " - " . $str . "\n";
+
+        if ($this->_log == NULL) {
+            $this->_log = dirname(__FILE__) . "/log.txt";
+            file_put_contents($this->_log, $str_to_log, LOCK_EX);
+        } else {
+            file_put_contents($this->_log, $str_to_log, FILE_APPEND | LOCK_EX);
+        }
+    }
+
+    public function view()
+    {
+        echo $this->template('main.php');
+    }
+
+    /**
+     * Шаблонизатор
+     *
+     * @param $template - путь до файла шаблона
+     * @param $v - ассоциативный массив значений переданных в шаблон
+     * @return - результат работы шаблона
+     * @example _tpl_('blog/root.php', array('title'=>'Hi!'))
+     */
+    public function template($template, $v = array())
+    {
+        extract($v, EXTR_SKIP);
+        ob_start();
+        include($_SERVER['DOCUMENT_ROOT'] . self::TPLPATH . $template);
+        return ob_get_clean();
+    }
 
 }

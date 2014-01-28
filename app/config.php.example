@@ -1,11 +1,11 @@
 <?php
 
 return array(
-	'db' => array(
-		'type' => 'mysql',
-		'host' => 'localhost',
-		'database' => '',
-		'user' => '',
-		'password' => ''
-	)
+    'db' => array(
+        'type' => 'mysql',
+        'host' => 'localhost',
+        'database' => '',
+        'user' => '',
+        'password' => ''
+    )
 );

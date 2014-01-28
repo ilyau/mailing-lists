@@ -1,23 +1,23 @@
 /*
-This file is part of Ext JS 3.4
+ This file is part of Ext JS 3.4
 
-Copyright (c) 2011-2013 Sencha Inc
+ Copyright (c) 2011-2013 Sencha Inc
 
-Contact:  http://www.sencha.com/contact
+ Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
+ GNU General Public License Usage
+ This file may be used under the terms of the GNU General Public License version 3.0 as
+ published by the Free Software Foundation and appearing in the file LICENSE included in the
+ packaging of this file.
 
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+ Please review the following information to ensure the GNU General Public License version 3.0
+ requirements will be met: http://www.gnu.org/copyleft/gpl.html.
 
-If you are unsure which license is appropriate for your use, please contact the sales department
-at http://www.sencha.com/contact.
+ If you are unsure which license is appropriate for your use, please contact the sales department
+ at http://www.sencha.com/contact.
 
-Build date: 2013-04-03 15:07:25
-*/
+ Build date: 2013-04-03 15:07:25
+ */
 /**
  * Ext.App
  * @extends Ext.util.Observable
@@ -25,32 +25,30 @@ Build date: 2013-04-03 15:07:25
  */
 Ext.App = function(config) {
     this.views = [];
-    
+
     this.initStateProvider();
-    
+
     Ext.apply(this, config);
-    
+
     if (!this.api.actions) {
         this.api.actions = {};
     }
-    
+
     Ext.onReady(this.onReady, this);
-    
+
     Ext.App.superclass.constructor.apply(this, arguments);
 };
 
 Ext.extend(Ext.App, Ext.util.Observable, {
-
     /***
      * response status codes.
      */
-    STATUS_EXCEPTION :          'exception',
-    STATUS_VALIDATION_ERROR :   "validation",
-    STATUS_ERROR:               "error",
-    STATUS_NOTICE:              "notice",
-    STATUS_OK:                  "ok",
-    STATUS_HELP:                "help",
-
+    STATUS_EXCEPTION: 'exception',
+    STATUS_VALIDATION_ERROR: "validation",
+    STATUS_ERROR: "error",
+    STATUS_NOTICE: "notice",
+    STATUS_OK: "ok",
+    STATUS_HELP: "help",
     /**
      * @cfg {Object} api
      * remoting api.  should be defined in your own config js.
@@ -60,28 +58,25 @@ Ext.extend(Ext.App, Ext.util.Observable, {
         type: null,
         actions: {}
     },
-
     // private, ref to message-box Element.
-    msgCt : null,
-
+    msgCt: null,
     // @protected, onReady, executes when Ext.onReady fires.
-    onReady : function() {
+    onReady: function() {
         // create the msgBox container.  used for App.setAlert
-        this.msgCt = Ext.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
+        this.msgCt = Ext.DomHelper.insertFirst(document.body, {id: 'msg-div'}, true);
         this.msgCt.setStyle('position', 'absolute');
         this.msgCt.setStyle('z-index', 9999);
         this.msgCt.setWidth(300);
     },
-
-    initStateProvider : function() {
+    initStateProvider: function() {
         /*
          * set days to be however long you think cookies should last
          */
         var days = '';        // expires when browser closes
-        if(days){
+        if (days) {
             var date = new Date();
-            date.setTime(date.getTime()+(days*24*60*60*1000));
-            var exptime = "; expires="+date.toGMTString();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var exptime = "; expires=" + date.toGMTString();
         } else {
             var exptime = null;
         }
@@ -94,57 +89,51 @@ Ext.extend(Ext.App, Ext.util.Observable, {
             secure: false
         }));
     },
-
     /**
      * registerView
      * register an application view component.
      * @param {Object} view
      */
-    registerView : function(view) {
+    registerView: function(view) {
         this.views.push(view);
     },
-
     /**
      * getViews
      * return list of registered views
      */
-    getViews : function() {
+    getViews: function() {
         return this.views;
     },
-
     /**
      * registerActions
      * registers new actions for API
      * @param {Object} actions
      */
-    registerActions : function(actions) {
+    registerActions: function(actions) {
         Ext.apply(this.api.actions, actions);
     },
-
     /**
      * getAPI
      * return Ext Remoting api
      */
-    getAPI : function() {
+    getAPI: function() {
         return this.api;
     },
-
     /***
      * setAlert
      * show the message box.  Aliased to addMessage
      * @param {String} msg
      * @param {Bool} status
      */
-    setAlert : function(status, msg) {
+    setAlert: function(status, msg) {
         this.addMessage(status, msg);
     },
-
     /***
      * adds a message to queue.
      * @param {String} msg
      * @param {Bool} status
      */
-    addMessage : function(status, msg) {
+    addMessage: function(status, msg) {
         var delay = 3;    // <-- default delay of msg box is 1 second.
         if (status == false) {
             delay = 5;    // <-- when status is error, msg box delay is 3 seconds.
@@ -159,13 +148,12 @@ Ext.extend(Ext.App, Ext.util.Observable, {
         }
 
         this.msgCt.alignTo(document, 't-t');
-        Ext.DomHelper.append(this.msgCt, {html:this.buildMessageBox(status, String.format.apply(String, Array.prototype.slice.call(arguments, 1)))}, true).slideIn('t').pause(delay).ghost("t", {remove:true});
+        Ext.DomHelper.append(this.msgCt, {html: this.buildMessageBox(status, String.format.apply(String, Array.prototype.slice.call(arguments, 1)))}, true).slideIn('t').pause(delay).ghost("t", {remove: true});
     },
-
     /***
      * buildMessageBox
      */
-    buildMessageBox : function(title, msg) {
+    buildMessageBox: function(title, msg) {
         switch (title) {
             case true:
                 title = this.STATUS_OK;
@@ -182,12 +170,11 @@ Ext.extend(Ext.App, Ext.util.Observable, {
             '</div>'
         ].join('');
     },
-
     /**
      * decodeStatusIcon
      * @param {Object} status
      */
-    decodeStatusIcon : function(status) {
+    decodeStatusIcon: function(status) {
         iconCls = '';
         switch (status) {
             case true:
@@ -207,35 +194,31 @@ Ext.extend(Ext.App, Ext.util.Observable, {
         }
         return iconCls;
     },
-
     /***
      * setViewState, alias for Ext.state.Manager.set
      * @param {Object} key
      * @param {Object} value
      */
-    setViewState : function(key, value) {
+    setViewState: function(key, value) {
         Ext.state.Manager.set(key, value);
     },
-
     /***
      * getViewState, aliaz for Ext.state.Manager.get
      * @param {Object} cmd
      */
-    getViewState : function(key) {
+    getViewState: function(key) {
         return Ext.state.Manager.get(key);
     },
-
     /**
      * t
      * translation function.  needs to be implemented.  simply echos supplied word back currently.
      * @param {String} to translate
      * @return {String} translated.
      */
-    t : function(words) {
+    t: function(words) {
         return words;
     },
-
-    handleResponse : function(res) {
+    handleResponse: function(res) {
         if (res.type == this.STATUS_EXCEPTION) {
             return this.handleException(res);
         }
@@ -243,8 +226,7 @@ Ext.extend(Ext.App, Ext.util.Observable, {
             this.setAlert(res.status, res.message);
         }
     },
-
-    handleException : function(res) {
+    handleException: function(res) {
         Ext.MessageBox.alert(res.type.toUpperCase(), res.message);
     }
 });

@@ -1,68 +1,72 @@
 <?php
 
-class ListsController extends CrudController {
-	
-	public function readAction() {
-		
-		$list = new ListModel();
-		
-		$result = $list->read();
+class ListsController extends CrudController
+{
 
-		echo json_encode($result);
+    public function readAction()
+    {
+        $list = new ListModel();
+        $result = $list->read();
 
-	}
-	public function createAction() {
-		
-		$response = new Response();
+        echo json_encode($result);
+    }
 
-		$data = json_decode($_REQUEST['data'], true);
+    public function createAction()
+    {
+        $response = new Response();
 
-		$list = new ListModel();
-		$result = $list->create($data);
+        $data = json_decode($_REQUEST['data'], true);
 
-		if ($result) {
-			$response->success = true;
-			$response->message = "Created record";
-			$response->data = array_merge(array('id' => App::get()->db()->lastInsertId()), $data);
-		} else {
-			$response->success = false;
-		}
+        $list = new ListModel();
+        $result = $list->create($data);
 
-		echo $response->to_json();
-	}
-	public function destroyAction() {
-		$response = new Response();
+        if ($result) {
+            $response->success = true;
+            $response->message = "Created record";
+            $response->data = array_merge(array('id' => App::get()->db()->lastInsertId()), $data);
+        } else {
+            $response->success = false;
+        }
 
-		$data = json_decode($_REQUEST['data'], true);
+        echo $response->to_json();
+    }
 
-		$list = new ListModel();
-		$result = $list->destroy((int) $data);
+    public function destroyAction()
+    {
+        $response = new Response();
 
-		if ($result) {
-			$response->success = true;
-			$response->message = "Removed campaign";
-		} else {
-			$response->success = false;
-		}
+        $data = json_decode($_REQUEST['data'], true);
 
-		echo $response->to_json();
-	}
+        $list = new ListModel();
+        $result = $list->destroy((int) $data);
 
-	public function updateAction() {
-		$response = new Response();
-		
-		$data = json_decode($_REQUEST['data'], true);
-		$id = $data['id'];
-		
-		$list = new ListModel();
-		$result = $list->update($id, $data);
-		
-		if($result) {
-			$response->success = true;
-			$response->message = "Updated record";
-			$response->data = $data;
-		}
+        if ($result) {
+            $response->success = true;
+            $response->message = "Removed campaign";
+        } else {
+            $response->success = false;
+        }
 
-		echo $response->to_json();
-	}
+        echo $response->to_json();
+    }
+
+    public function updateAction()
+    {
+        $response = new Response();
+
+        $data = json_decode($_REQUEST['data'], true);
+        $id = $data['id'];
+
+        $list = new ListModel();
+        $result = $list->update($id, $data);
+
+        if ($result) {
+            $response->success = true;
+            $response->message = "Updated record";
+            $response->data = $data;
+        }
+
+        echo $response->to_json();
+    }
+
 }
